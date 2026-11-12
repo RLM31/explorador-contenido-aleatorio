@@ -1,18 +1,20 @@
 # Explorador de contenido aleatorio
 
-**Integrante:** Matias Raldes Leon
+Integrante: Matias Raldes Leon
 
-## Ejecución
+Página hecha con HTML, CSS, JavaScript y Bootstrap que muestra una cita, una foto de perro, una foto de gato y un dato curioso. Cada tarjeta tiene su botón y se actualiza sola, sin recargar la página.
+
+## Cómo ejecutarlo
 
 1. Descargar o clonar el repositorio.
-2. Abrir la carpeta en VS Code e iniciar con la extensión Live Server, o ejecutar `python -m http.server` dentro de la carpeta y abrir http://localhost:8000.
-3. Si se aloja en ASP.NET Core MVC: copiar `css/` y `js/` dentro de `wwwroot/`, usar el contenido de `index.html` en una vista, ejecutar `dotnet run` y abrir la URL indicada.
+2. Abrir la carpeta en VS Code y correr index.html con Live Server, o hacer doble clic en index.html para abrirlo en el navegador.
+3. Se necesita internet porque las APIs y Bootstrap se cargan desde la web.
 
-## Preguntas de reflexión
+## Preguntas
 
-**1. ¿Qué es un endpoint y cuál utilizaste para cada API?**
+**1. ¿Qué es un endpoint y cuál utilicé para cada API?**
 
-Un endpoint es la URL concreta de un servicio a la que se envía una solicitud para obtener o enviar datos.
+Un endpoint es la dirección (URL) a la que le hacemos la consulta para que nos devuelva los datos. Usé estos:
 
 - Citas: https://dummyjson.com/quotes/random
 - Perros: https://dog.ceo/api/breeds/image/random
@@ -20,18 +22,18 @@ Un endpoint es la URL concreta de un servicio a la que se envía una solicitud p
 - Datos curiosos: https://uselessfacts.jsph.pl/api/v2/facts/random?language=en
 - Traducción: https://api.mymemory.translated.net/get
 
-**2. ¿Qué diferencia existe entre recibir JSON y recibir directamente una imagen?**
+**2. ¿Qué diferencia hay entre recibir JSON y recibir directamente una imagen?**
 
-JSON es texto estructurado que se convierte en un objeto con `response.json()` y del cual se leen campos como `quote` o `message`. Una imagen es contenido binario: no se procesa con `response.json()`, sino que se usa su URL directamente en el atributo `src` de una etiqueta `<img>`.
+El JSON es texto con datos ordenados, entonces lo paso a objeto con response.json() y saco los campos que necesito (quote, author, message, text). En cambio una imagen llega como archivo binario y no se puede leer con response.json(). Para mostrarla solo se pone su URL en el src de un img. Por eso con los gatos primero pido el JSON para sacar la URL o el id y después armo la dirección de la imagen.
 
 **3. ¿Qué función cumplen await y response.json()?**
 
-`await` pausa la ejecución de la función `async` hasta que la promesa se resuelva, sin bloquear la página. `response.json()` lee el cuerpo de la respuesta y lo convierte en un objeto de JavaScript; también devuelve una promesa, por eso se usa con `await`.
+await hace que la función espere a que termine la consulta antes de seguir con la siguiente línea, sin congelar la página. response.json() lee la respuesta y la convierte en un objeto de JavaScript que ya puedo usar. Como también devuelve una promesa, se usa con await.
 
-**4. ¿Por qué se debe verificar response.ok además de utilizar try/catch?**
+**4. ¿Por qué se debe verificar response.ok además de usar try/catch?**
 
-`fetch` solo lanza una excepción ante fallos de red. Si el servidor responde con un error HTTP como 404 o 500, la promesa se resuelve igualmente. Verificar `response.ok` permite detectar esos casos y lanzar un error manualmente para que el `catch` lo maneje.
+Porque fetch solo da error cuando falla la red, por ejemplo si no hay internet. Si el servidor responde con un error como 404 o 500, fetch lo toma como una respuesta normal y el catch no se activa. Con response.ok puedo detectar eso y lanzar yo mismo el error para que lo atrape el catch.
 
-**5. ¿Cómo lograste actualizar una sección sin recargar toda la página?**
+**5. ¿Cómo logré actualizar una sección sin recargar toda la página?**
 
-Con `fetch` y JavaScript. Al presionar el botón de una sección se consulta únicamente su API y se modifica solo el DOM de esa tarjeta (`textContent` o `src`), sin navegar ni recargar la página. Cada sección tiene su propio estado de carga, su propio botón y su propio manejo de errores.
+Con fetch y JavaScript. Cuando se presiona el botón de una tarjeta, hago la consulta solo a la API de esa tarjeta y después cambio únicamente su contenido en el DOM (textContent o src). Cada tarjeta tiene su propio botón, su mensaje de "Cargando…" y su manejo de errores, así que si una API falla las otras siguen funcionando.
